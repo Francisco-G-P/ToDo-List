@@ -14,7 +14,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilter }) => {
   const [state, setState] = useState("All");
 
   const handleSearch = () => {
-    // Configura filtros para devolver todas las tareas cuando todo esté en "All"
+    // Set filters to return all tasks when in "All" (or empty for "Name").
     const filters = {
       name: name.trim(),
       priority: priority === "All" ? "" : priority.toLowerCase(),
