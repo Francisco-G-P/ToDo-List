@@ -17,7 +17,7 @@ public class InMemoryTodoRepository {
     private final Map<Long, Todo> todoMap = new HashMap<>();
     private long idCounter = 1;
 
-    // Guardar una nueva tarea
+    // Save a new task.
     public Todo save(Todo todo) {
         if (todo.getId() == null) {
             todo.setId(idCounter++);
@@ -26,22 +26,22 @@ public class InMemoryTodoRepository {
         return todo;
     }
 
-    // Obtener todas las tareas
+    // Get all the tasks.
     public List<Todo> findAll() {
         return new ArrayList<>(todoMap.values());
     }
 
-    // Obtener tarea por ID
+    // Get task by id.
     public Optional<Todo> findById(Long id) {
         return Optional.ofNullable(todoMap.get(id));
     }
 
-    // Eliminar tarea por ID
+    // Delete task by id.
     public boolean deleteById(Long id) {
         return todoMap.remove(id) != null;
     }
 
-    // Prellenar datos de ejemplo
+    // Preload example data.
     public void populateSampleData() {
         save(new Todo(null, "Complete the to-do project!", "high", false, LocalDate.now(), LocalDate.of(2024, 11, 22),
                 null));

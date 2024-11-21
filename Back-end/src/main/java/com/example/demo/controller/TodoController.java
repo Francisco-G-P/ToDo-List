@@ -31,41 +31,41 @@ public class TodoController {
     }
 
     @GetMapping // GET
-                // /todos-------------------------------------------------------------------------------------------
+                // /todos-----------------------------------------------------------------------------------------------
     public List<Todo> getTodos(
-            @RequestParam(defaultValue = "1") int page, // Número de página (por defecto 1)
-            @RequestParam(defaultValue = "10") int size // Tamaño de página (por defecto 10)
+            @RequestParam(defaultValue = "1") int page, // Page number (default: 1).
+            @RequestParam(defaultValue = "10") int size // Page size (default: 10).
     ) {
-        // Obtener todas las tareas
+        // Get all the tasks.
         List<Todo> todos = todoRepository.findAll();
 
-        // Calcular índices para la paginación
+        // Calculate indexes for pagination.
         int fromIndex = (page - 1) * size;
         int toIndex = Math.min(fromIndex + size, todos.size());
 
-        // Manejar el caso en que la página solicitada esté fuera del rango
+        // Requested page out of range.
         if (fromIndex >= todos.size() || fromIndex < 0) {
-            return List.of(); // Retornar lista vacía
+            return List.of(); // Return empty list.
         }
 
-        // Retornar la sublista correspondiente
+        // Return specified sub-list.
         return todos.subList(fromIndex, toIndex);
     }
 
     @PostMapping // POST
-                 // /todos-----------------------------------------------------------------------------------------
+                 // /todos----------------------------------------------------------------------------------------------
     public Todo createTodo(@RequestBody Todo newTodo) {
-        // Validar que el texto no esté vacío
+        // Validation for empty text.
         if (newTodo.getText() == null || newTodo.getText().isEmpty()) {
-            throw new IllegalArgumentException("Text is required. Don`t be shy!");
+            throw new IllegalArgumentException("Text is required. Don`t be shy! Nothing less than 1 character!");
         }
 
-        // Validar que el texto no exceda 120 caracteres
+        // Validation for over 120 characters text.
         if (newTodo.getText().length() > 120) {
-            throw new IllegalArgumentException("Text cannot exceed 120 characters. Or fall behind 1 character...");
+            throw new IllegalArgumentException("Text cannot exceed 120 characters. Little tiny bit more concise!");
         }
 
-        // Validar que la prioridad sea válida
+        // Validation for existing priorities.
         if (newTodo.getPriority() == null ||
                 (!newTodo.getPriority().equalsIgnoreCase("low") &&
                         !newTodo.getPriority().equalsIgnoreCase("medium") &&
@@ -73,21 +73,21 @@ public class TodoController {
             throw new IllegalArgumentException("Priority must be 'low', 'medium', or 'high'. Please and thank you!");
         }
 
-        // Asignar la fecha de creación automáticamente
+        // Set 'creationDate' automatically.
         newTodo.setCreationDate(LocalDate.now());
 
-        // Guardar la tarea y retornarla
+        // Save and return task.
         return todoRepository.save(newTodo);
     }
 
     @PutMapping("/{id}") // PUT
-                         // /todos/{id}-----------------------------------------------------------------------------
+                         // /todos/{id}---------------------------------------------------------------------------------
     public Todo updateTodo(@PathVariable Long id, @RequestBody Todo updatedTodo) {
-        // Buscar la tarea existente
+        // Search existing task.
         Todo existingTodo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Todo not found! Try again!"));
 
-        // Validar y actualizar el texto
+        // Validate and update text.
         if (updatedTodo.getText() != null && !updatedTodo.getText().isEmpty()) {
             if (updatedTodo.getText().length() > 120) {
                 throw new IllegalArgumentException("Text cannot exceed 120 characters. Or fall behind 1 character...");
@@ -95,7 +95,7 @@ public class TodoController {
             existingTodo.setText(updatedTodo.getText());
         }
 
-        // Validar y actualizar la prioridad
+        // Validate and update priority.
         if (updatedTodo.getPriority() != null) {
             if (!List.of("low", "medium", "high").contains(updatedTodo.getPriority().toLowerCase())) {
                 throw new IllegalArgumentException(
@@ -104,46 +104,46 @@ public class TodoController {
             existingTodo.setPriority(updatedTodo.getPriority());
         }
 
-        // Actualizar la fecha de entrega (opcional)
+        // Update 'dueDate' (optional).
         if (updatedTodo.getDueDate() != null) {
             existingTodo.setDueDate(updatedTodo.getDueDate());
         }
 
-        // Guardar los cambios
+        // Save changes.
         return todoRepository.save(existingTodo);
     }
 
     @PostMapping("/{id}/done") // POST
-                               // /todos/{id}/done-----------------------------------------------------------------
+                               // /todos/{id}/done----------------------------------------------------------------------
     public Todo markTodoAsDone(@PathVariable Long id) {
-        // Buscar la tarea existente
+        // Search existing task.
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Todo not found. Don't get greedy!"));
 
-        // Marcar como terminada solo si no está ya terminada
+        // Mark as done (true) only if it isn't already done.
         if (!todo.isDoneUndone()) {
             todo.setDoneUndone(true);
-            todo.setDoneDate(LocalDate.now()); // Asigna la fecha actual como fecha de finalización
+            todo.setDoneDate(LocalDate.now()); // Current date as 'doneDate'.
         }
 
-        // Guardar los cambios
+        // Save changes.
         return todoRepository.save(todo);
     }
 
     @PutMapping("/{id}/undone") // PUT
                                 // /todos/{id}/undone-------------------------------------------------------------------
     public Todo markTodoAsUndone(@PathVariable Long id) {
-        // Buscar la tarea existente
+        // Search existing task.
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Todo not found"));
 
-        // Marcar como no terminada solo si está terminada
+        // Mark as undone (false) only if it is done.
         if (todo.isDoneUndone()) {
             todo.setDoneUndone(false);
-            todo.setDoneDate(null); // Eliminar la fecha de finalización
+            todo.setDoneDate(null); // Delete 'doneDate'.
         }
 
-        // Guardar los cambios
+        // Save changes.
         return todoRepository.save(todo);
     }
 }
