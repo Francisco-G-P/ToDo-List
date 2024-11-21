@@ -21,7 +21,7 @@ const TaskTable: React.FC = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    fetch("http://localhost:9090/todos")
+    fetch("http://localhost:9090/todos") // 'fetch' to connect to Back-end (port 9090).
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`);
@@ -33,12 +33,12 @@ const TaskTable: React.FC = () => {
         setFilteredTasks(data);
       })
       .catch((error) => {
-        console.error("Error al cargar las tareas:", error);
+        console.error("Error loading tasks:", error);
       });
   }, []);
 
   useEffect(() => {
-    // Sincroniza filteredTasks con tasks cuando tasks cambia
+    // Syncs 'FilteredTasks' with tasks when tasks change.
     setFilteredTasks(tasks);
   }, [tasks]);
 
@@ -51,7 +51,7 @@ const TaskTable: React.FC = () => {
     const taskToUpdate = tasks.find((task) => task.id === id);
 
     if (!taskToUpdate) {
-      console.error("Task not found!");
+      console.error("Task not found! Try again!");
       return;
     }
 

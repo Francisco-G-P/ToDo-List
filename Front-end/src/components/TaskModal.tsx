@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface Task {
   id: string;
@@ -16,13 +16,15 @@ interface TaskModalProps {
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({ onClose, onSave }) => {
-  const [text, setText] = useState('');
-  const [priority, setPriority] = useState('low');
-  const [dueDate, setDueDate] = useState('');
+  const [text, setText] = useState("");
+  const [priority, setPriority] = useState("low");
+  const [dueDate, setDueDate] = useState("");
 
   const handleSave = () => {
     if (!text || text.length > 120) {
-      alert('Task name is required and must be less than 120 characters.');
+      alert(
+        "Task name is required and must be less than 120 characters (and more than 0!)."
+      );
       return;
     }
 
@@ -31,7 +33,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onSave }) => {
       text,
       priority,
       doneUndone: false,
-      creationDate: new Date().toISOString().split('T')[0],
+      creationDate: new Date().toISOString().split("T")[0],
       dueDate: dueDate || undefined,
       doneDate: undefined,
     };
@@ -77,7 +79,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onSave }) => {
       <button onClick={handleSave} style={buttonStyle}>
         Save
       </button>
-      <button onClick={onClose} style={{ ...buttonStyle, backgroundColor: '#f5f5f5' }}>
+      <button
+        onClick={onClose}
+        style={{ ...buttonStyle, backgroundColor: "#f5f5f5" }}
+      >
         Cancel
       </button>
     </div>
@@ -85,32 +90,32 @@ const TaskModal: React.FC<TaskModalProps> = ({ onClose, onSave }) => {
 };
 
 const modalStyle: React.CSSProperties = {
-  position: 'fixed',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'white',
-  padding: '20px',
-  border: '1px solid black',
-  borderRadius: '8px',
-  width: '300px',
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "white",
+  padding: "20px",
+  border: "1px solid black",
+  borderRadius: "8px",
+  width: "300px",
   zIndex: 1000,
 };
 
 const inputStyle: React.CSSProperties = {
-  display: 'block',
-  margin: '10px 0',
-  padding: '5px',
-  width: '100%',
-  fontSize: '14px',
+  display: "block",
+  margin: "10px 0",
+  padding: "5px",
+  width: "100%",
+  fontSize: "14px",
 };
 
 const buttonStyle: React.CSSProperties = {
-  padding: '5px 10px',
-  border: '1px solid black',
-  backgroundColor: 'white',
-  cursor: 'pointer',
-  marginTop: '10px',
+  padding: "5px 10px",
+  border: "1px solid black",
+  backgroundColor: "white",
+  cursor: "pointer",
+  marginTop: "10px",
 };
 
 export default TaskModal;
