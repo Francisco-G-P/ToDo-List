@@ -5,17 +5,17 @@ import java.time.LocalDate;
 public class Todo {
     private Long id;
     private String text;
-    private String priority; // "low", "medium", "high"
-    private boolean doneUndone; // true = completada, false = sin completar
+    private String priority; // "low", "medium", "high".
+    private boolean doneUndone; // true = complete, false = to complete.
     private LocalDate creationDate;
-    private LocalDate dueDate; // Fecha opcional
-    private LocalDate doneDate; // Fecha opcional
+    private LocalDate dueDate; // Optional.
+    private LocalDate doneDate; // Added till done.
 
-    // Constructor vacío
+    // Empty Constructor.
     public Todo() {
     }
 
-    // Constructor completo
+    // Full Constructor.
     public Todo(Long id, String text, String priority, boolean doneUndone, LocalDate creationDate, LocalDate dueDate,
             LocalDate doneDate) {
         this.id = id;
@@ -27,7 +27,7 @@ public class Todo {
         this.doneDate = doneDate;
     }
 
-    // Getters y Setters
+    // Getters y Setters.
     public Long getId() {
         return id;
     }

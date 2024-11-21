@@ -13,8 +13,8 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**") // Permitir todas las rutas
-                        .allowedOrigins("http://localhost:8080") // Permitir el Front-end
+                registry.addMapping("/**") // Allow all routes.
+                        .allowedOrigins("http://localhost:8080") // Allow connection to Front-end (port 8080).
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
             }
         };
