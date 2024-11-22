@@ -1,4 +1,25 @@
-# ToDo-List
-To-Do List Project Repository - Breakable Toy I
+# To-Do-List
 
-Soon to be written a whole explanation about how to download and run the ToDo-List Project's files (aka Breakable Toy I) ;)...
+
+**To-Do List Project - Breakable Toy I**
+The project consists of a to-dos list manager that has a filter section, a list section as the main component, and a metrics section for time management.
+
+
+**Installation**
+To run the project locally on your computer you must download 2 folders; "Back-end" and "Front-end".
+
+To be able to run the "Back-end" folder's components you must make sure you have a version of Java and Maven (latest versions recommended) in your device.
+Down below are the links to guide you through the download and installation of each.
+
+[Download and Install of Java](https://www.java.com/en/download/help/download_options.html)
+[Download and Install of Maven](https://maven.apache.org/download.cgi)
+
+To be able to run the "Front-end" folder's components you must make sure you have a version of Node.js (latest version recommended) in your device.
+Down beloew is the link to guide you through the download and installation of it.
+
+[Download and Install Node.js](https://nodejs.org/en/download/package-manager)
+
+
+**Usage**
+In your code editor of choice, open terminal and run the command:
+```mvn spring-boot:run```
