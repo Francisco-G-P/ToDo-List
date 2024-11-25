@@ -1,14 +1,14 @@
-# To-Do-List
+# To-Do-List - Encora's Spark Program
 
 
-**To-Do List Project - Breakable Toy I**
+## To-Do List Project - Breakable Toy I ~~(Buildable Bug 0.5)~~
 The project consists of a to-dos list manager that has a filter section for certain categories, a task section as the main component, and a metrics section for time management.
 
 The technologies applied for Front-end are: TypeScript and React,
 and the ones for Back-end are: Java, Maven, and Spring Boot.
 
 
-**Installation**
+### Installation
 To run the project locally on your computer you must download 2 folders; "Back-end" and "Front-end".
 
 To be able to run the "Back-end" folder's components you must make sure you have a version of Java and Maven (latest versions recommended) in your device.
@@ -24,7 +24,14 @@ Down beloew is the link to guide you through the download and installation of it
 [Download and Install Node.js](https://nodejs.org/en/download/package-manager)
 
 
-**Usage**
-In your code editor of choice, open the 'Back-end' folder, open terminal and run the command:
+### Usage
+**BY DOWNLOADING FILES--->**
+In your code editor of choice, open the "Back-end" folder, open terminal and run the command:
 ```mvn spring-boot:run```
+In a new window, open the "Front-end" folder, open terminal and run the command:
+```npm install```
+```npm start```
+
+**BY FORKING REPOSITORY--->**
+Go to the repository's page.
 
