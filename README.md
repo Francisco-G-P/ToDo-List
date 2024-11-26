@@ -28,10 +28,20 @@ Down beloew is the link to guide you through the download and installation of it
 **BY DOWNLOADING FILES--->**
 In your code editor of choice, open the "Back-end" folder, open terminal and run the command:
 ```mvn spring-boot:run```
-In a new window, open the "Front-end" folder, open terminal and run the command:
+In a new window, open the "Front-end" folder, open terminal and run the commands:
 ```npm install```
 ```npm start```
 
-**BY FORKING REPOSITORY--->**
-Go to the repository's page.
+**BY FORKING (AND CLONING) REPOSITORY--->**
+For a detailed series of steps about how to fork and clone in various ways review the next link:
 
+[Forking and Cloning a Repository](https://docs.github.com/es/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#)
+
+After forking and cloning...
+In your code editor of choice, open terminal and run the command:
+```mvn spring-boot:run```
+In a new window, open terminal and run the commands:
+```npm install```
+```npm start```
+
+<ins>The reason for the **```npm install```** with the Front-end files is because of the "node_modules" directory. The directory's size and the files' count is just too large to handle this way. Using this command you'll generate this repository locally so that you can run the Front-end's application in your device.</ins>
