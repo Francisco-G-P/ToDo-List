@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
+		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>todo-list-demo</artifactId>
+	<artifactId>todo-list-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>todo-list-demo</name>
-	<description>To-do List Backend</description>
+	<name>todo-list-backend</name>
+	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
