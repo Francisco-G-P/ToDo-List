@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { Task } from "../types/Task";
 
-interface TaskModalProps {
-  onSave: (task: Omit<Task, "id" | "creationDate" | "doneDate">) => void;
+interface EditTaskModalProps {
+  task: Task;
+  onSave: (updatedTask: Task) => void;
   onCancel: () => void;
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ onSave, onCancel }) => {
-  const [text, setText] = useState("");
-  const [priority, setPriority] = useState("Low");
-  const [dueDate, setDueDate] = useState("");
+const EditTaskModal: React.FC<EditTaskModalProps> = ({
+  task,
+  onSave,
+  onCancel,
+}) => {
+  const [text, setText] = useState(task.text);
+  const [priority, setPriority] = useState(task.priority);
+  const [dueDate, setDueDate] = useState(task.dueDate || "");
 
   const handleSave = () => {
     if (!text.trim()) {
@@ -17,18 +22,13 @@ const TaskModal: React.FC<TaskModalProps> = ({ onSave, onCancel }) => {
       return;
     }
 
-    onSave({
-      text,
-      priority: priority as "Low" | "Medium" | "High",
-      doneUndone: false,
-      dueDate: dueDate || undefined,
-    });
+    onSave({ ...task, text, priority, dueDate: dueDate || undefined });
   };
 
   return (
     <div style={styles.overlay}>
       <div style={styles.modal}>
-        <h3 style={styles.header}>Add New Task</h3>
+        <h3 style={styles.header}>Edit Task</h3>
         <div style={styles.field}>
           <label htmlFor="name">Name:</label>
           <input
@@ -44,7 +44,9 @@ const TaskModal: React.FC<TaskModalProps> = ({ onSave, onCancel }) => {
           <select
             id="priority"
             value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+            onChange={(e) =>
+              setPriority(e.target.value as "Low" | "Medium" | "High")
+            }
             style={styles.select}
           >
             <option value="Low">Low</option>
@@ -126,4 +128,4 @@ const styles = {
   },
 };
 
-export default TaskModal;
+export default EditTaskModal;

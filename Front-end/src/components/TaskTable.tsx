@@ -1,254 +1,153 @@
-import React, { useState, useEffect } from "react";
-import TaskModal from "./TaskModal";
-import Filters from "./Filters";
-import Metrics from "./Metrics";
+import React, { useState } from "react";
+import { Task } from "../types/Task";
 
-interface Task {
-  id: string;
-  text: string;
-  doneUndone: boolean;
-  priority: string;
-  creationDate: string;
-  dueDate?: string;
-  doneDate?: string;
+interface TaskTableProps {
+  tasks: Task[];
+  onToggleDone: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-const TaskTable: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+const TaskTable: React.FC<TaskTableProps> = ({
+  tasks,
+  onToggleDone,
+  onEdit,
+  onDelete,
+}) => {
+  const [sortConfig, setSortConfig] = useState<{
+    key: "priority" | "dueDate";
+    direction: "asc" | "desc";
+  } | null>(null);
 
-  useEffect(() => {
-    fetch("http://localhost:9090/todos")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data: Task[]) => {
-        setTasks(data);
-        setFilteredTasks(data);
-      })
-      .catch((error) => {
-        console.error("Error al cargar las tareas:", error);
-      });
-  }, []);
+  const sortedTasks = React.useMemo(() => {
+    if (!sortConfig) return tasks;
+    const sorted = [...tasks];
+    sorted.sort((a, b) => {
+      if (sortConfig.key === "priority") {
+        const priorityOrder = { Low: 1, Medium: 2, High: 3 };
+        return sortConfig.direction === "asc"
+          ? priorityOrder[a.priority] - priorityOrder[b.priority]
+          : priorityOrder[b.priority] - priorityOrder[a.priority];
+      } else if (sortConfig.key === "dueDate") {
+        const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+        const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+        return sortConfig.direction === "asc" ? dateA - dateB : dateB - dateA;
+      }
+      return 0;
+    });
+    return sorted;
+  }, [tasks, sortConfig]);
 
-  useEffect(() => {
-    // Sincroniza filteredTasks con tasks cuando tasks cambia
-    setFilteredTasks(tasks);
-  }, [tasks]);
-
-  const handleAddTask = (task: Task) => {
-    const updatedTasks = [...tasks, task];
-    setTasks(updatedTasks);
-  };
-
-  const handleToggleDone = (id: string) => {
-    const taskToUpdate = tasks.find((task) => task.id === id);
-
-    if (!taskToUpdate) {
-      console.error("Task not found!");
-      return;
-    }
-
-    const endpoint = taskToUpdate.doneUndone
-      ? `http://localhost:9090/todos/${id}/undone`
-      : `http://localhost:9090/todos/${id}/done`;
-
-    fetch(endpoint, {
-      method: taskToUpdate.doneUndone ? "PUT" : "POST",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((updatedTask: Task) => {
-        const updatedTasks = tasks.map((task) =>
-          task.id === updatedTask.id ? updatedTask : task
-        );
-        setTasks(updatedTasks);
-      })
-      .catch((error) => console.error("Error toggling task status:", error));
-  };
-
-  const handleDeleteTask = (id: string) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
-
-    const updatedFilteredTasks = filteredTasks.filter((task) => task.id !== id);
-    setFilteredTasks(updatedFilteredTasks);
-
-    const totalPages = Math.ceil(updatedFilteredTasks.length / itemsPerPage);
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages || 1);
-    }
-  };
-
-  const handleFilter = (filters: {
-    name: string;
-    priority: string;
-    state: string;
-  }) => {
-    const { name, priority, state } = filters;
-
-    let filtered = tasks;
-
-    if (name) {
-      filtered = filtered.filter((task) =>
-        task.text.toLowerCase().includes(name.toLowerCase())
-      );
-    }
-
-    if (priority && priority !== "All") {
-      filtered = filtered.filter((task) => task.priority === priority);
-    }
-
-    if (state && state !== "All") {
-      const isDone = state === "Done";
-      filtered = filtered.filter((task) => task.doneUndone === isDone);
-    }
-
-    setFilteredTasks(filtered);
-    setCurrentPage(1);
-  };
-
-  const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
-
-  const currentTasks = filteredTasks.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handlePageClick = (page: number) => {
-    setCurrentPage(page);
+  const handleSort = (key: "priority" | "dueDate") => {
+    setSortConfig((prevConfig) =>
+      prevConfig?.key === key && prevConfig.direction === "asc"
+        ? { key, direction: "desc" }
+        : { key, direction: "asc" }
+    );
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <Filters onFilter={handleFilter} />
-      <button
-        onClick={() => setModalOpen(true)}
-        style={{
-          backgroundColor: "white",
-          border: "1px solid black",
-          padding: "5px 10px",
-          cursor: "pointer",
-          fontSize: "12px",
-          marginBottom: "15px",
-        }}
-      >
-        + New To Do
-      </button>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          border: "3px solid #a0a0a0",
-          fontFamily: "Roboto",
-          fontSize: "12px",
-          tableLayout: "fixed",
-        }}
-      >
+    <div style={styles.container}>
+      <table style={styles.table}>
         <thead>
           <tr>
-            <th style={tableHeaderStyle}>Checkbox</th>
-            <th style={tableHeaderStyle}>Name</th>
-            <th style={tableHeaderStyle}>Priority</th>
-            <th style={tableHeaderStyle}>Due Date</th>
-            <th style={tableHeaderStyle}>Actions</th>
+            <th style={styles.header}>Done</th>
+            <th style={styles.header}>Name</th>
+            <th style={styles.header} onClick={() => handleSort("priority")}>
+              Priority{" "}
+              {sortConfig?.key === "priority"
+                ? sortConfig.direction === "asc"
+                  ? "↑"
+                  : "↓"
+                : ""}
+            </th>
+            <th style={styles.header} onClick={() => handleSort("dueDate")}>
+              Due Date{" "}
+              {sortConfig?.key === "dueDate"
+                ? sortConfig.direction === "asc"
+                  ? "↑"
+                  : "↓"
+                : ""}
+            </th>
+            <th style={styles.header}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {currentTasks.length === 0 ? (
-            <tr>
-              <td colSpan={5} style={{ textAlign: "center", padding: "10px" }}>
-                No todos yet...
-              </td>
-            </tr>
-          ) : (
-            currentTasks.map((task) => (
-              <tr key={`${task.id}-${task.doneUndone}`}>
-                <td style={tableCellStyle}>
+          {sortedTasks.length > 0 ? (
+            sortedTasks.map((task) => (
+              <tr key={task.id}>
+                <td style={styles.cell}>
                   <input
                     type="checkbox"
                     checked={task.doneUndone}
-                    onChange={() => handleToggleDone(task.id)}
+                    onChange={() => onToggleDone(task.id)}
                   />
                 </td>
-                <td style={tableCellStyle}>{task.text}</td>
-                <td style={tableCellStyle}>{task.priority}</td>
-                <td style={tableCellStyle}>{task.dueDate || "-"}</td>
-                <td style={tableCellStyle}>
-                  <span
-                    role="img"
-                    aria-label="delete"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDeleteTask(task.id)}
+                <td style={styles.cell}>{task.text}</td>
+                <td style={styles.cell}>{task.priority}</td>
+                <td style={styles.cell}>{task.dueDate || "No due date"}</td>
+                <td style={styles.cell}>
+                  <button
+                    style={styles.actionButton}
+                    onClick={() => onEdit(task.id)}
+                  >
+                    📝
+                  </button>
+                  <button
+                    style={styles.actionButton}
+                    onClick={() => onDelete(task.id)}
                   >
                     🗑️
-                  </span>
+                  </button>
                 </td>
               </tr>
             ))
+          ) : (
+            <tr>
+              <td colSpan={5} style={styles.noTasks}>
+                No tasks available... yet.
+              </td>
+            </tr>
           )}
         </tbody>
       </table>
-      {totalPages > 1 && (
-        <div
-          style={{
-            marginTop: "15px",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-            (page) => (
-              <button
-                key={page}
-                onClick={() => handlePageClick(page)}
-                style={{
-                  margin: "0 5px",
-                  padding: "5px 10px",
-                  border: "1px solid black",
-                  backgroundColor: page === currentPage ? "#a0a0a0" : "white",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                }}
-              >
-                {page}
-              </button>
-            )
-          )}
-        </div>
-      )}
-      {isModalOpen && (
-        <TaskModal onClose={() => setModalOpen(false)} onSave={handleAddTask} />
-      )}
-      <Metrics tasks={tasks} />
     </div>
   );
 };
 
-const tableHeaderStyle: React.CSSProperties = {
-  border: "1px solid black",
-  padding: "8px",
-  textAlign: "left",
-  backgroundColor: "#f9f9f9",
-  width: "20%",
-};
-
-const tableCellStyle: React.CSSProperties = {
-  border: "1px solid black",
-  padding: "8px",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
+const styles = {
+  container: {
+    marginTop: "15px",
+    border: "3px solid grey",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse" as const,
+  },
+  header: {
+    borderBottom: "1px solid black",
+    backgroundColor: "grey",
+    color: "white",
+    padding: "10px",
+    textAlign: "center" as const,
+    cursor: "pointer",
+  },
+  cell: {
+    borderBottom: "1px solid black",
+    padding: "10px",
+    textAlign: "center" as const,
+  },
+  actionButton: {
+    backgroundColor: "transparent",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
+  noTasks: {
+    padding: "15px",
+    textAlign: "center" as const,
+    fontStyle: "italic",
+  },
 };
 
 export default TaskTable;
