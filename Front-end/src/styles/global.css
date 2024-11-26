@@ -1,0 +1,38 @@
+/* Global styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    color: black;
+    background-color: white;
+  }
+  
+  button {
+    background-color: grey;
+    color: white;
+    border: 1px solid black;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  button:active {
+    background-color: red;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 3px solid grey;
+  }
+  
+  th, td {
+    border: 1px solid black;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  th {
+    background-color: grey;
+    color: white;
+  }  

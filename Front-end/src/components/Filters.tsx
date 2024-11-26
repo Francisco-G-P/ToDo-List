@@ -1,113 +1,97 @@
 import React, { useState } from "react";
 
 interface FiltersProps {
-  onFilter: (filters: {
-    name: string;
+  onSearch: (filters: {
+    text: string;
     priority: string;
     state: string;
   }) => void;
 }
 
-const Filters: React.FC<FiltersProps> = ({ onFilter }) => {
-  const [name, setName] = useState("");
+const Filters: React.FC<FiltersProps> = ({ onSearch }) => {
+  const [text, setText] = useState("");
   const [priority, setPriority] = useState("All");
   const [state, setState] = useState("All");
 
   const handleSearch = () => {
-    // Configura filtros para devolver todas las tareas cuando todo esté en "All"
-    const filters = {
-      name: name.trim(),
-      priority: priority === "All" ? "" : priority.toLowerCase(),
-      state: state === "All" ? "" : state,
-    };
-
-    onFilter(filters);
+    onSearch({ text, priority, state });
   };
 
   return (
-    <div
-      style={{
-        border: "3px solid #a0a0a0",
-        padding: "15px",
-        marginBottom: "15px",
-        fontFamily: "Roboto",
-        fontSize: "12px",
-        backgroundColor: "white",
-        position: "relative",
-      }}
-    >
-      <div style={{ marginBottom: "10px" }}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{
-              width: "93.75%",
-              padding: "5px",
-              border: "1px solid black",
-              marginTop: "5px",
-            }}
-          />
-        </label>
+    <div style={styles.container}>
+      <div style={styles.field}>
+        <label htmlFor="text">Text:</label>
+        <input
+          id="text"
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          style={styles.input}
+        />
       </div>
-      <div style={{ marginBottom: "10px" }}>
-        <label>
-          Priority:
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            style={{
-              width: "50%",
-              padding: "5px",
-              border: "1px solid black",
-              marginTop: "5px",
-            }}
-          >
-            <option value="All">All</option>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
-        </label>
+      <div style={styles.field}>
+        <label htmlFor="priority">Priority:</label>
+        <select
+          id="priority"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          style={styles.select}
+        >
+          <option value="All">All</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
       </div>
-      <div style={{ marginBottom: "10px" }}>
-        <label>
-          State:
-          <select
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            style={{
-              width: "51.65%",
-              padding: "5px",
-              border: "1px solid black",
-              marginTop: "5px",
-            }}
-          >
-            <option value="All">All</option>
-            <option value="Done">Done</option>
-            <option value="Undone">Undone</option>
-          </select>
-        </label>
+      <div style={styles.field}>
+        <label htmlFor="state">State:</label>
+        <select
+          id="state"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          style={styles.select}
+        >
+          <option value="All">All</option>
+          <option value="Done">Done</option>
+          <option value="Undone">Undone</option>
+        </select>
       </div>
-      <button
-        onClick={handleSearch}
-        style={{
-          float: "right",
-          padding: "5px 10px",
-          border: "1px solid black",
-          cursor: "pointer",
-          backgroundColor: "white",
-          position: "absolute",
-          bottom: "15px",
-          right: "21px",
-        }}
-      >
+      <button onClick={handleSearch} style={styles.button}>
         Search
       </button>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    border: "3px solid grey",
+    padding: "20px",
+    marginBottom: "24px",
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "10px",
+  },
+  header: {
+    margin: 0,
+  },
+  field: {
+    display: "flex",
+    flexDirection: "column" as const,
+  },
+  input: {
+    padding: "5px",
+    fontSize: "14px",
+  },
+  select: {
+    padding: "5px",
+    fontSize: "14px",
+    width: "50%", // Cambia el ancho al 50%
+  },
+  button: {
+    alignSelf: "flex-end",
+    padding: "10px 15px",
+  },
 };
 
 export default Filters;

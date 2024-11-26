@@ -1,62 +1,68 @@
-import React from 'react';
-
-interface Task {
-  id: string;
-  text: string;
-  doneUndone: boolean;
-  priority: string;
-  creationDate: string;
-  dueDate?: string;
-  doneDate?: string;
-}
+import React from "react";
+import { Task } from "../types/Task";
 
 interface MetricsProps {
   tasks: Task[];
 }
 
 const Metrics: React.FC<MetricsProps> = ({ tasks }) => {
-  // Duraciones estimadas para cada prioridad
-  const timeByPriority = {
-    low: 20,
-    medium: 10,
-    high: 5,
+  // Define priority weights
+  const priorityWeights = {
+    Low: 20,
+    Medium: 10,
+    High: 5,
   };
 
-  // Calcular tiempo total en minutos
-  const totalMinutes = tasks.reduce((total, task) => {
-    const time = timeByPriority[task.priority as keyof typeof timeByPriority] || 0;
-    return total + time;
+  // Calculate total time
+  const totalMinutes = tasks.reduce((sum, task) => {
+    return sum + (priorityWeights[task.priority] || 0);
   }, 0);
 
-  // Formatear tiempo total
+  // Format total time
   const formattedTime =
-    totalMinutes >= 60
-      ? `${Math.floor(totalMinutes / 60)} hours ${totalMinutes % 60} minutes`
-      : `${totalMinutes} minutes`;
+    totalMinutes < 60
+      ? `${totalMinutes} minutes`
+      : `${Math.floor(totalMinutes / 60)}:${String(totalMinutes % 60).padStart(
+          2,
+          "0"
+        )} hours`;
 
   return (
-    <div style={metricsContainerStyle}>
-      <div>
-        <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>Average time to finish tasks:</h3>
-        <p style={{ margin: 0, fontSize: '12px' }}>{formattedTime}</p>
+    <div style={styles.container}>
+      <div style={styles.left}>
+        <h3>Average time to finish tasks:</h3>
+        <p style={styles.time}>{formattedTime}</p>
       </div>
-      <div>
-        <h3 style={{ margin: '0 0 10px 0', fontSize: '14px' }}>Average time to finish tasks by priority:</h3>
-        <p style={{ margin: 0, fontSize: '12px' }}>Low: 20 min</p>
-        <p style={{ margin: 0, fontSize: '12px' }}>Medium: 10 min</p>
-        <p style={{ margin: 0, fontSize: '12px' }}>High: 5 min</p>
+      <div style={styles.right}>
+        <h3>Average time to finish tasks by priority:</h3>
+        <p>Low: 20 min</p>
+        <p>Medium: 10 min</p>
+        <p>High: 5 min</p>
       </div>
     </div>
   );
 };
 
-const metricsContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  border: '3px solid #a0a0a0',
-  padding: '10px 15px',
-  marginTop: '15px',
-  fontFamily: 'Roboto',
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    border: "3px solid grey",
+    padding: "20px",
+    marginTop: "15px",
+  },
+  left: {
+    flex: 1,
+  },
+  right: {
+    flex: 1,
+    textAlign: "right" as const,
+  },
+  time: {
+    fontSize: "18px",
+    fontWeight: "bold" as const,
+  },
 };
 
 export default Metrics;
