@@ -2,22 +2,22 @@ package com.example.todo_list_backend.models;
 
 import java.time.LocalDate;
 
-// Model class representing a task in the to-do list
+// Model class representing a task in the to-do list.
 public class Todo {
 
-    private String id; // Unique identifier for the task
-    private String text; // Task name or description
-    private boolean doneUndone; // Indicates if the task is completed
-    private String priority; // Priority level: low, medium, high
-    private LocalDate creationDate; // Date the task was created
-    private LocalDate dueDate; // Optional due date for the task
-    private LocalDate doneDate; // Date when the task was completed (optional)
+    private String id; // Unique id for the task.
+    private String text; // Task name or description.
+    private boolean doneUndone; // Indicates if the task is completed.
+    private String priority; // Priority level: low, medium, high.
+    private LocalDate creationDate; // Date the task was created.
+    private LocalDate dueDate; // Optional due date for the task.
+    private LocalDate doneDate; // Date when the task was completed (optional).
 
-    // Default constructor
+    // Default constructor.
     public Todo() {
     }
 
-    // Constructor with all fields
+    // Constructor with all fields.
     public Todo(String id, String text, boolean doneUndone, String priority, LocalDate creationDate, LocalDate dueDate,
             LocalDate doneDate) {
         this.id = id;
@@ -29,7 +29,7 @@ public class Todo {
         this.doneDate = doneDate;
     }
 
-    // Getters and setters
+    // Getters and setters.
     public String getId() {
         return id;
     }
