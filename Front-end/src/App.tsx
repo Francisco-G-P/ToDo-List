@@ -16,7 +16,7 @@ const App: React.FC = () => {
     state: "All",
   });
 
-  // Function to load tasks from the Back-end
+  // Function to load tasks from the Back-end.
   const loadTasks = async () => {
     try {
       const response = await fetch("http://localhost:9090/todos");

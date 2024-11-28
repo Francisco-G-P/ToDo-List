@@ -6,19 +6,19 @@ interface MetricsProps {
 }
 
 const Metrics: React.FC<MetricsProps> = ({ tasks }) => {
-  // Define priority weights
+  // Define priority weights.
   const priorityWeights = {
     Low: 20,
     Medium: 10,
     High: 5,
   };
 
-  // Calculate total time
+  // Calculate total time.
   const totalMinutes = tasks.reduce((sum, task) => {
     return sum + (priorityWeights[task.priority] || 0);
   }, 0);
 
-  // Format total time
+  // Format total time.
   const formattedTime =
     totalMinutes < 60
       ? `${totalMinutes} minutes`
