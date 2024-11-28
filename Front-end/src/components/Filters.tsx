@@ -86,7 +86,7 @@ const styles = {
   select: {
     padding: "5px",
     fontSize: "14px",
-    width: "50%", // Cambia el ancho al 50%
+    width: "50%",
   },
   button: {
     alignSelf: "flex-end",
