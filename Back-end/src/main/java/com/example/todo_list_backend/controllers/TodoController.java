@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,15 @@ public class TodoController {
                 !"high".equalsIgnoreCase(todo.getPriority())) {
             return ResponseEntity.badRequest().body(null); // Invalid priority.
         }
+
+        // Validate due date.
+        if (todo.getDueDate() != null) {
+            LocalDate dueDate = todo.getDueDate();
+            if (dueDate.isBefore(LocalDate.now())) {
+                return ResponseEntity.badRequest().body(null); // The due date cannot be in the past.
+            }
+        }
+
         Todo savedTodo = todoRepository.save(todo);
         return ResponseEntity.ok(savedTodo);
     }
@@ -83,5 +93,16 @@ public class TodoController {
             return ResponseEntity.ok().build();
         }
         return todoOptional.isPresent() ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    // DELETE /todos/{id} - Delete a task by ID.
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTodo(@PathVariable String id) {
+        Optional<Todo> existingTodo = todoRepository.findById(id);
+        if (existingTodo.isPresent()) {
+            todoRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build(); // Return 404 if the task does not exist.
     }
 }
