@@ -57,12 +57,29 @@ const App: React.FC = () => {
     return matchesText && matchesPriority && matchesState;
   });
 
-  const toggleDone = (id: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, doneUndone: !task.doneUndone } : task
-      )
-    );
+  const toggleDone = async (id: string, done: boolean) => {
+    try {
+      const endpoint = done
+        ? `http://localhost:9090/todos/${id}/done`
+        : `http://localhost:9090/todos/$id{/undone}`;
+
+      const response = await fetch(endpoint, {
+        method: done ? "POST" : "PUT",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === id ? { ...task, doneUndone: done } : task
+        )
+      );
+      console.log("Task status updated successfully!", id, done);
+    } catch (error) {
+      console.error("Failed to update task status: error");
+    }
   };
 
   const editTask = (id: string) => {
@@ -104,8 +121,21 @@ const App: React.FC = () => {
     }
   };
 
-  const deleteTask = (id: string) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  const deleteTask = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:9090/todos/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+      console.log("Task deleted successfully!", id);
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
   };
 
   const addTask = async (
@@ -144,7 +174,12 @@ const App: React.FC = () => {
       </button>
       <TaskTable
         tasks={filteredTasks}
-        onToggleDone={toggleDone}
+        onToggleDone={(id) => {
+          const task = tasks.find((task) => task.id === id);
+          if (task) {
+            toggleDone(id, !task.doneUndone);
+          }
+        }}
         onEdit={editTask}
         onDelete={deleteTask}
       />
